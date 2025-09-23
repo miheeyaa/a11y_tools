@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카드 맞추기 게임</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            flex-direction: column;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 1.5rem;
+            background-color: #2d3748;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .game-board {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0.5rem;
+            margin-top: 1rem;
+            table-layout: fixed;
+        }
+        .card-cell {
+            padding: 0;
+            vertical-align: top;
+        }
+        .card {
+            width: 100%;
+            padding-top: 100%;
+            position: relative;
+            background-color: #a0aec0;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: transparent;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped {
+            background-color: #fbd38d;
+            transform: rotateY(180deg);
+        }
+        .card.matched {
+            background-color: #68d391;
+            cursor: default;
+            pointer-events: none;
+            color: white;
+        }
+        .card-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(180deg);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            color: #1a202c;
+            font-size: 3rem;
+        }
+        .card.matched .card-content {
+            color: white;
+        }
+        .card.flipped .card-content {
+            color: black;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-800 text-gray-200">
+
+    <div class="container text-center">
+        <h1 class="text-3xl font-bold mb-4">카드 맞추기 게임</h1>
+        
+        <div class="flex justify-between items-center mb-4">
+            <div id="level" class="text-xl font-semibold">단계: 1</div>
+            <div id="timer" class="text-xl font-semibold">남은 시간: 20초</div>
+        </div>
+        
+        <table id="game-board" class="game-board"></table>
+        
+        <div class="mt-6 flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <button id="startButton" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold transition-all transform hover:scale-105">
+                게임 시작
+            </button>
+            <button id="restartButton" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-bold transition-all transform hover:scale-105" disabled>
+                재시작
+            </button>
+            <button id="nextLevelButton" class="hidden px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-all transform hover:scale-105">
+                다음 단계 도전하기
+            </button>
+        </div>
+        
+        <div id="messageBox" class="bg-yellow-800 text-white p-4 rounded-lg mt-4 hidden">
+            <p id="messageText"></p>
+        </div>
+
+        <!-- 스크린리더용 실시간 알림 영역 -->
+        <div id="live-announcer" aria-live="polite" class="sr-only"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const levels = [
+                { rows: 2, cols: 2 }, // Stage 1
+                { rows: 2, cols: 3 }, // Stage 2
+                { rows: 2, cols: 4 }, // Stage 3
+                { rows: 2, cols: 4 }, // Stage 4 (Modified to be even)
+                { rows: 3, cols: 4 }, // Stage 5
+                { rows: 3, cols: 5 }, // Stage 6
+                { rows: 4, cols: 4 }, // Stage 7
+                { rows: 4, cols: 4 }, // Stage 8
+                { rows: 4, cols: 5 }  // Stage 9
+            ];
+            
+            const cardContent = ['🐶', '🐱', '🐰', '🐻', '🐼', '🐨', '🐷', '🦊', '🐸', '🦁'];
+            
+            let currentLevel = 0;
+            let firstCard = null;
+            let secondCard = null;
+            let lockBoard = false;
+            let matchedPairs = 0;
+            let timer;
+            const timeLimit = 20;
+            let timeRemaining = timeLimit;
+            let gameOver = false;
+
+            const startButton = document.getElementById('startButton');
+            const restartButton = document.getElementById('restartButton');
+            const nextLevelButton = document.getElementById('nextLevelButton');
+            const levelDisplay = document.getElementById('level');
+            const timerDisplay = document.getElementById('timer');
+            const gameBoard = document.getElementById('game-board');
+            const liveAnnouncer = document.getElementById('live-announcer');
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+
+            // 메시지 표시 함수
+            function showMessage(text) {
+                messageText.textContent = text;
+                messageBox.classList.remove('hidden');
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 3000);
+            }
+            
+            // 스크린리더에게 메시지 전달 함수
+            function announceToScreenReader(message) {
+                liveAnnouncer.textContent = message;
+                // 메시지 중복 방지를 위해 잠시 뒤 clear
+                setTimeout(() => { liveAnnouncer.textContent = ''; }, 100);
+            }
+
+            // 게임 보드 생성
+            function createBoard(levelIndex) {
+                const { rows, cols } = levels[levelIndex];
+                const totalCards = rows * cols;
+                const pairs = totalCards / 2;
+                
+                if (totalCards % 2 !== 0) {
+                     showMessage("4단계는 홀수이므로 2x4 (8장)로 변경하여 게임을 시작합니다.");
+                }
+
+                const contentPairs = cardContent.slice(0, pairs);
+                const cardsArray = [...contentPairs, ...contentPairs];
+                
+                cardsArray.sort(() => 0.5 - Math.random());
+                
+                gameBoard.innerHTML = '';
+                
+                let cardIndex = 0;
+                for (let r = 0; r < rows; r++) {
+                    const rowElement = document.createElement('tr');
+                    for (let c = 0; c < cols; c++) {
+                        const cellElement = document.createElement('td');
+                        cellElement.classList.add('card-cell');
+
+                        const card = document.createElement('button');
+                        card.classList.add('card', 'rounded-xl', 'shadow-lg');
+                        card.setAttribute('role', 'button');
+                        card.setAttribute('aria-label', `${r+1}행 ${c+1}열 뒤집힌 카드`);
+                        card.setAttribute('data-content', cardsArray[cardIndex]);
+                        card.setAttribute('data-row', r + 1);
+                        card.setAttribute('data-col', c + 1);
+                        
+                        const content = document.createElement('div');
+                        content.classList.add('card-content', 'text-6xl');
+                        content.textContent = cardsArray[cardIndex];
+                        
+                        card.appendChild(content);
+                        cellElement.appendChild(card);
+                        rowElement.appendChild(cellElement);
+                        card.addEventListener('click', flipCard);
+                        cardIndex++;
+                    }
+                    gameBoard.appendChild(rowElement);
+                }
+            }
+
+            // 카드 뒤집기
+            function flipCard() {
+                if (lockBoard || this === firstCard || this.classList.contains('matched')) return;
+                
+                this.classList.add('flipped');
+                
+                const row = this.getAttribute('data-row');
+                const col = this.getAttribute('data-col');
+                announceToScreenReader(`${row}행 ${col}열, ${this.getAttribute('data-content')} 카드`);
+
+                if (!firstCard) {
+                    firstCard = this;
+                    return;
+                }
+
+                secondCard = this;
+                checkForMatch();
+            }
+
+            // 짝 맞추기 확인
+            function checkForMatch() {
+                let isMatch = firstCard.getAttribute('data-content') === secondCard.getAttribute('data-content');
+                isMatch ? disableCards() : unflipCards();
+            }
+
+            // 짝이 맞았을 때
+            function disableCards() {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+                firstCard.setAttribute('aria-label', firstCard.getAttribute('data-content') + ' 카드, 짝이 맞춰졌습니다.');
+                secondCard.setAttribute('aria-label', secondCard.getAttribute('data-content') + ' 카드, 짝이 맞춰졌습니다.');
+                
+                firstCard.removeEventListener('click', flipCard);
+                secondCard.removeEventListener('click', flipCard);
+                
+                announceToScreenReader('짝이 맞았습니다!');
+
+                matchedPairs++;
+                const totalPairs = (levels[currentLevel].rows * levels[currentLevel].cols) / 2;
+                if (matchedPairs === totalPairs) {
+                    endGame('win');
+                }
+                
+                resetBoard();
+            }
+
+            // 짝이 틀렸을 때
+            function unflipCards() {
+                lockBoard = true;
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                    firstCard.setAttribute('aria-label', firstCard.getAttribute('data-row') + '행 ' + firstCard.getAttribute('data-col') + '열 뒤집힌 카드');
+                    secondCard.setAttribute('aria-label', secondCard.getAttribute('data-row') + '행 ' + secondCard.getAttribute('data-col') + '열 뒤집힌 카드');
+                    
+                    announceToScreenReader('짝이 틀렸습니다.');
+                    resetBoard();
+                }, 1000);
+            }
+
+            // 보드 초기화
+            function resetBoard() {
+                [firstCard, secondCard, lockBoard] = [null, null, false];
+            }
+            
+            // 타이머 시작
+            function startTimer() {
+                timeRemaining = timeLimit;
+                timerDisplay.textContent = `남은 시간: ${timeRemaining}초`;
+                clearInterval(timer);
+                timer = setInterval(() => {
+                    timeRemaining--;
+                    timerDisplay.textContent = `남은 시간: ${timeRemaining}초`;
+                    
+                    if (timeRemaining === 20 || timeRemaining === 10 || timeRemaining === 3) {
+                        announceToScreenReader(`남은 시간 ${timeRemaining}초`);
+                    }
+
+                    if (timeRemaining <= 0) {
+                        endGame('lose');
+                    }
+                }, 1000);
+            }
+
+            // 게임 시작
+            function startGame() {
+                gameOver = false;
+                startButton.classList.add('hidden');
+                nextLevelButton.classList.add('hidden');
+                restartButton.classList.remove('hidden');
+                restartButton.disabled = false;
+                matchedPairs = 0;
+                
+                createBoard(currentLevel);
+                startTimer();
+                announceToScreenReader('게임 시작! ' + (currentLevel + 1) + '단계. 모든 카드를 맞춰주세요.');
+            }
+
+            // 게임 종료
+            function endGame(status) {
+                gameOver = true;
+                clearInterval(timer);
+                startButton.classList.remove('hidden');
+                
+                if (status === 'win') {
+                    if (currentLevel < levels.length - 1) {
+                        showMessage('성공! 다음 단계로 진행할 수 있습니다.');
+                        announceToScreenReader('성공! 다음 단계로 진행할 수 있습니다.');
+                        startButton.classList.add('hidden');
+                        nextLevelButton.classList.remove('hidden');
+                        nextLevelButton.textContent = `${currentLevel + 2}단계 도전하기`;
+                    } else {
+                        showMessage('축하합니다! 모든 단계를 클리어했습니다!');
+                        announceToScreenReader('축하합니다! 모든 단계를 클리어했습니다!');
+                    }
+                } else if (status === 'lose') {
+                    showMessage('시간 초과! 게임 오버!');
+                    announceToScreenReader('시간 초과! 게임 오버!');
+                }
+            }
+            
+            // 재시작 버튼 클릭 시
+            restartButton.addEventListener('click', () => {
+                currentLevel = 0;
+                levelDisplay.textContent = `단계: ${currentLevel + 1}`;
+                startButton.textContent = '게임 시작';
+                nextLevelButton.classList.add('hidden');
+                startButton.classList.remove('hidden');
+                restartButton.classList.add('hidden');
+                startGame();
+            });
+
+            // 시작 버튼 클릭 시
+            startButton.addEventListener('click', () => {
+                startGame();
+            });
+            
+            // 다음 단계 버튼 클릭 시
+            nextLevelButton.addEventListener('click', () => {
+                currentLevel++;
+                levelDisplay.textContent = `단계: ${currentLevel + 1}`;
+                startGame();
+            });
+
+            // 초기 보드 생성 및 버튼 상태 설정
+            createBoard(currentLevel);
+            restartButton.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
