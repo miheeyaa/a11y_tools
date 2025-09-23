@@ -97,7 +97,7 @@
         
         <div class="flex justify-between items-center mb-4">
             <div id="level" class="text-xl font-semibold">단계: 1</div>
-            <div id="timer" class="text-xl font-semibold">남은 시간: 20초</div>
+            <div id="timer" class="text-xl font-semibold">남은 시간: 30초</div>
         </div>
         
         <table id="game-board" class="game-board"></table>
@@ -144,7 +144,7 @@
             let lockBoard = false;
             let matchedPairs = 0;
             let timer;
-            const timeLimit = 20;
+            const timeLimit = 30; // 시간 제한을 30초로 변경
             let timeRemaining = timeLimit;
             let gameOver = false;
 
@@ -294,7 +294,8 @@
                     timeRemaining--;
                     timerDisplay.textContent = `남은 시간: ${timeRemaining}초`;
                     
-                    if (timeRemaining === 20 || timeRemaining === 10 || timeRemaining === 3) {
+                    // 30, 20, 10, 5초 남았을 때 음성 안내
+                    if (timeRemaining === 30 || timeRemaining === 20 || timeRemaining === 10 || timeRemaining === 5) {
                         announceToScreenReader(`남은 시간 ${timeRemaining}초`);
                     }
 
