@@ -5,10 +5,14 @@
   <title>제출된 데이터 보기</title>
   <style>
     body { 
-      font-family: Arial; 
+      font-family: Arial, sans-serif; 
       max-width: 800px; 
-      margin: 40px auto;
+      margin: 40px auto; 
       line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
     }
     table {
       width: 100%;
@@ -22,31 +26,36 @@
     th {
       background: #f4f4f4;
     }
+    tbody tr:nth-child(even) {
+      background: #fafafa;
+    }
   </style>
 </head>
 <body>
 
-<h2>제출된 데이터 목록</h2>
-<p>Google Sheets에서 실시간 조회한 데이터입니다.</p>
+<h1>제출된 결과</h1>
+<p>Google Sheets에서 실시간으로 불러온 데이터입니다.</p>
 
 <table id="table">
   <thead>
     <tr>
       <th>시간</th>
-      <th>이름</th>
-      <th>이메일</th>
-      <th>메시지</th>
+      <th>case1</th>
+      <th>case2</th>
+      <th>case3</th>
+      <th>case4</th>
+      <th>case5</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
 <script>
-  // ⭐ 사용자의 스프레드시트 ID + 시트명
+  // ⭐ 사용자의 스프레드시트 ID
   const sheetID = "10zeC7G3rpjGmSN0kKhEsLoCviETcnwjz5Xvjq9ZJsXk";
   const sheetName = "Sheet1";
 
-  // ⭐ CORS 완전 허용된 opensheet API 사용
+  // ⭐ CORS 완전 허용된 OPEN SHEET API (추천)
   const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
 
   async function loadData() {
@@ -59,12 +68,16 @@
 
       data.forEach(row => {
         const tr = document.createElement("tr");
+
         tr.innerHTML = `
           <td>${row.timestamp || ""}</td>
-          <td>${row.name || ""}</td>
-          <td>${row.email || ""}</td>
-          <td>${row.message || ""}</td>
+          <td>${row.case1 || ""}</td>
+          <td>${row.case2 || ""}</td>
+          <td>${row.case3 || ""}</td>
+          <td>${row.case4 || ""}</td>
+          <td>${row.case5 || ""}</td>
         `;
+
         tbody.appendChild(tr);
       });
 
