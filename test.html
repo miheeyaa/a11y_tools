@@ -40,7 +40,7 @@
 <h2>문의하기</h2>
 
 <form id="myForm">
-  <label>이름</label>
+  <label>1이름</label>
   <input type="text" name="name" required>
 
   <label>이메일</label>
@@ -55,7 +55,7 @@
 <p id="result"></p>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbx3ZOmcpXMkwBH9YMtuxYIw6V_CszfNlp7UEQqzr7TFpRg5_CRnKdtTAIJVR8vdoYHz/exec";  // ⭐여기에 GAS 웹앱 URL 넣기
+  const scriptURL = "https://script.google.com/macros/s/AKfycbx3ZOmcpXMkwBH9YMtuxYIw6V_CszfNlp7UEQqzr7TFpRg5_CRnKdtTAIJVR8vdoYHz/exec";
 
   document.getElementById("myForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -69,28 +69,26 @@
     };
 
     try {
-      const response = await fetch(scriptURL, {
-          method: "POST",
-          mode: "no-cors",    // ⭐ 무조건 추가
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formData)
-        });
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
 
-
-
-      const result = await response.json();
-      console.log("서버 응답:", result);
-
+      // ⭐ no-cors에서는 응답을 읽을 수 없으므로 result 제거
       document.getElementById("result").innerText = "전송이 완료되었습니다!";
       e.target.reset();
+
     } catch (error) {
       console.error("오류:", error);
       document.getElementById("result").innerText = "전송 중 오류가 발생했습니다.";
     }
   });
 </script>
+
 
 </body>
 </html>
