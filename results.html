@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <title>제출된 데이터 보기</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
+    body { 
+      font-family: Arial; 
+      max-width: 800px; 
       margin: 40px auto;
+      line-height: 1.6;
     }
     table {
       width: 100%;
@@ -15,9 +16,8 @@
       margin-top: 20px;
     }
     th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
+      border: 1px solid #ccc;
+      padding: 10px;
     }
     th {
       background: #f4f4f4;
@@ -27,9 +27,9 @@
 <body>
 
 <h2>제출된 데이터 목록</h2>
-<p>Google Sheets에 저장된 모든 데이터를 아래에서 확인할 수 있습니다.</p>
+<p>Google Sheets에서 실시간 조회한 데이터입니다.</p>
 
-<table id="dataTable">
+<table id="table">
   <thead>
     <tr>
       <th>시간</th>
@@ -42,23 +42,28 @@
 </table>
 
 <script>
-  const apiURL = "https://script.google.com/macros/s/AKfycbx3ZOmcpXMkwBH9YMtuxYIw6V_CszfNlp7UEQqzr7TFpRg5_CRnKdtTAIJVR8vdoYHz/exec"; // doGet()
+  // ⭐ 사용자의 스프레드시트 ID + 시트명
+  const sheetID = "10zeC7G3rpjGmSN0kKhEsLoCviETcnwjz5Xvjq9ZJsXk";
+  const sheetName = "Sheet1";
+
+  // ⭐ CORS 완전 허용된 opensheet API 사용
+  const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
 
   async function loadData() {
     try {
-      const response = await fetch(apiURL);
-      const rows = await response.json();
+      const response = await fetch(url);
+      const data = await response.json();
 
-      const tbody = document.querySelector("#dataTable tbody");
+      const tbody = document.querySelector("#table tbody");
       tbody.innerHTML = "";
 
-      rows.forEach(row => {
+      data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${new Date(row.timestamp).toLocaleString()}</td>
-          <td>${row.name}</td>
-          <td>${row.email}</td>
-          <td>${row.message}</td>
+          <td>${row.timestamp || ""}</td>
+          <td>${row.name || ""}</td>
+          <td>${row.email || ""}</td>
+          <td>${row.message || ""}</td>
         `;
         tbody.appendChild(tr);
       });
