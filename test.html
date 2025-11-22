@@ -3,51 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Google Sheets Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      line-height: 1.6;
-    }
-    label { display: block; margin-top: 15px; }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      font-size: 18px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover { background: #45a049; }
-    #result { margin-top: 20px; font-weight: bold; }
-  </style>
 </head>
 
 <body>
 
-<h2>문의하기</h2>
+<h2>입력 폼</h2>
 
 <form id="myForm">
-  <label>1이름</label>
+  <label>이름</label>
   <input type="text" name="name" required>
 
   <label>이메일</label>
   <input type="email" name="email" required>
 
   <label>메시지</label>
-  <textarea name="message" rows="5" required></textarea>
+  <textarea name="message" required></textarea>
 
   <button type="submit">전송</button>
 </form>
@@ -55,13 +25,12 @@
 <p id="result"></p>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbx3ZOmcpXMkwBH9YMtuxYIw6V_CszfNlp7UEQqzr7TFpRg5_CRnKdtTAIJVR8vdoYHz/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxFVuhFNX5xkikxw3maUbtAl5aEQ99QHorOiujv96GcD0xUGJa25nPJlUxpfvG-b0MU/exec";
 
   document.getElementById("myForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const form = new FormData(e.target);
-
     const formData = {
       name: form.get("name"),
       email: form.get("email"),
@@ -71,24 +40,21 @@
     try {
       await fetch(scriptURL, {
         method: "POST",
-        mode: "no-cors", 
-        headers: {
-          "Content-Type": "application/json"
-        },
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      // ⭐ no-cors에서는 응답을 읽을 수 없으므로 result 제거
-      document.getElementById("result").innerText = "전송이 완료되었습니다!";
+      document.getElementById("result").innerText = "전송 완료!";
       e.target.reset();
 
     } catch (error) {
       console.error("오류:", error);
-      document.getElementById("result").innerText = "전송 중 오류가 발생했습니다.";
+      document.getElementById("result").innerText = "전송 실패!";
     }
   });
 </script>
 
-
 </body>
 </html>
+
