@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>제출된 데이터 보기</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { 
       font-family: Arial, sans-serif; 
@@ -44,9 +44,9 @@
 
 <h1>제출된 결과</h1>
 
-<!-- ⭐ 최상단 통계 -->
+<!-- ⭐ 수정된 통계 영역 -->
 <div class="stats-box">
-  <div class="stats-title">응답 통계 요약</div>
+  <div id="stats-title" class="stats-title">응답 통계 요약</div>
   <div id="stats"></div>
 </div>
 
@@ -77,24 +77,28 @@
 
       const tbody = document.querySelector("#table tbody");
       const statsBox = document.getElementById("stats");
+      const statsTitle = document.getElementById("stats-title");
+
       tbody.innerHTML = "";
       statsBox.innerHTML = "";
 
-      // -----------------------------
-      // ⭐ 카운트 초기화
-      // -----------------------------
+      // 전체 응답 수 계산
+      const totalResponses = data.filter(row => row.case1 || row.case2 || row.case3 || row.case4 || row.case5).length;
+
+      // 제목 업데이트
+      statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
+
+      // 통계 초기값
       const categories = ["준수", "오류", "해당하지 않음", "모르겠다"];
       const stat = {
-        case1: { total: 0, 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-        case2: { total: 0, 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-        case3: { total: 0, 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-        case4: { total: 0, 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-        case5: { total: 0, 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 }
+        case1: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+        case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+        case3: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+        case4: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+        case5: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 }
       };
 
-      // -----------------------------
-      // ⭐ 테이블 표시 + 통계 집계
-      // -----------------------------
+      // 테이블 렌더 + 통계 기록
       data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -109,24 +113,18 @@
 
         ["case1","case2","case3","case4","case5"].forEach(k => {
           const val = row[k];
-
-          // 응답 수 증가 (null/빈칸 제외)
-          if (val && categories.includes(val)) {
-            stat[k].total++;
+          if (categories.includes(val)) {
             stat[k][val]++;
           }
         });
       });
 
-      // -----------------------------
-      // ⭐ 통계 HTML 생성
-      // -----------------------------
+      // 통계 표 구성 (전체 응답 수 열 삭제됨)
       let html = `
         <table>
           <thead>
             <tr>
               <th>케이스</th>
-              <th>전체 응답 수</th>
               <th>준수</th>
               <th>오류</th>
               <th>해당없음</th>
@@ -141,7 +139,6 @@
         html += `
           <tr>
             <td>${i}번</td>
-            <td>${stat[key].total}</td>
             <td>${stat[key]["준수"]}</td>
             <td>${stat[key]["오류"]}</td>
             <td>${stat[key]["해당하지 않음"]}</td>
@@ -163,3 +160,4 @@
 
 </body>
 </html>
+
