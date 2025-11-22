@@ -64,6 +64,18 @@
       width:10%;
       margin-top:0;
     }
+
+    .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
     
   </style>
 </head>
@@ -78,8 +90,12 @@
   <div class="case-box">
     <h2 class="case-title">1번 케이스</h2>
     <div class="case-area">
-      <button class="case1-button" aria-label="찾기">search</button>
+      <button aria-label="닫기">X</button>
     </div>
+    <p>버튼 내 텍스트는 알파벳 X가 있고, aria-label을 닫기로 제공함</p>
+    <code aria-hidden="true">
+      <p>&lt;div class="case-area"&gt;<br /> &lt;button class="case1-button" aria-label="찾기"&gt;search&lt;/button&gt;<br /> &lt;/div&gt;</p>
+    </code>
     <label><input type="radio" name="case1" value="준수"> 준수</label><br>
     <label><input type="radio" name="case1" value="오류"> 오류</label><br>
     <label><input type="radio" name="case1" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -93,6 +109,10 @@
       <div>이메일</div>
       <input type="text" aria-label="이메일" value="연락처" />
     </div>
+    <p>이메일 텍스트 아래 연락처라는 value값이 표시된 텍스트 입력폼이 있음</p>
+    <code aria-hidden="true">
+      <p>&lt;div&gt;이메일&lt;/div&gt;<br /> &lt;input type="text" aria-label="이메일" value="연락처" /&gt;</p>
+    </code>
     <label><input type="radio" name="case2" value="준수"> 준수</label><br>
     <label><input type="radio" name="case2" value="오류"> 오류</label><br>
     <label><input type="radio" name="case2" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -102,6 +122,15 @@
   <!-- 3번 -->
   <div class="case-box">
     <h2 class="case-title">3번 케이스</h2>
+    <div class="case-area">
+      <a href="https://w3.org" aria-label="W3C 홈페이지">
+    		<img src="https://www.w3.org/WAI/content-assets/wcag-act-rules/test-assets/shared/w3c-logo.png" alt="w3c 로고" />
+    	</a>
+    </div>
+    <p>W3C로고 이미지 링크, 이미지 alt값은 w3c 로고이고 링크에 aria-label로 W3C 홈페이지라 제공</p>
+    <code aria-hidden="true">
+      <p>&lt;a href="https://w3.org" aria-label="W3C 홈페이지"&gt;<br /> &lt;img src="https://www.w3.org/WAI/content-assets/wcag-act-rules/test-assets/shared/w3c-logo.png" alt="w3c 로고" /&gt;<br /> &lt;/a&gt;</p>
+    </code>
     <label><input type="radio" name="case3" value="준수"> 준수</label><br>
     <label><input type="radio" name="case3" value="오류"> 오류</label><br>
     <label><input type="radio" name="case3" value="해당하지 않음"> 해당하지 않음</label><br>
