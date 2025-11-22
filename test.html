@@ -84,15 +84,17 @@ document.querySelectorAll(".answer-btn").forEach(btn => {
 
     fetch(WEB_APP_URL, {
       method: "POST",
-      headers: {
+      mode: "cors",
+      headers: { 
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        participant: participantId,
-        caseId,
-        answer
+        participant: "testUser",
+        caseId: "case1",
+        answer: "오류(Error)"
       })
     })
+
 
 
     alert(`${caseId} 전송 완료!`);
