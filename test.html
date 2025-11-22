@@ -82,11 +82,17 @@ document.querySelectorAll(".answer-btn").forEach(btn => {
       answer
     };
 
-    await fetch(WEB_APP_URL, {
+    fetch(WEB_APP_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        participant: participantId,
+        caseId,
+        answer
+      })
+    })
 
 
     alert(`${caseId} 전송 완료!`);
