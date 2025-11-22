@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정답 통계</title>
+<style>
+body { font-family:sans-serif; padding:20px; max-width:480px; margin:auto; }
+.case-box { background:#f5f5f5; padding:16px; margin-bottom:20px; border-radius:12px; }
+.progress { height:12px; background:#4A90E2; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<h1>실시간 정답 통계</h1>
+<div id="stats">불러오는 중...</div>
+
+<script>
+const sheetUrl = "https://opensheet.elk.sh/AKfycbwzMZFSHN5Ipax1vVCcgbMYcTEF9zm6Uv25yEBCFd5j1FXMk3XuQCm0VoUIprJiGvnw/Sheet1";
+
+const answerKey = {
+  case1: "오류(Error)",
+  case2: "성공(Pass)",
+  case3: "대상 없음(N/A)",
+  case4: "대상 없음(N/A)"
+};
+
+async function loadStats() {
+  const res = await fetch(sheetUrl);
+  const data = await res.json();
+
+  const grouped = {};
+  data.forEach(row => {
+    if (!grouped[row.case_id]) grouped[row.case_id] = [];
+    grouped[row.case_id].push(row.answer);
+  });
+
+  const statsContainer = document.getElementById("stats");
+  statsContainer.innerHTML = "";
+
+  Object.keys(answerKey).forEach(caseId => {
+    const list = grouped[caseId] || [];
+    const total = list.length;
+    const correct = list.filter(a => a === answerKey[caseId]).length;
+    const pct = total ? Math.round((correct / total) * 100) : 0;
+
+    const box = document.createElement("div");
+    box.className = "case-box";
+    box.innerHTML = `
+      <h2>${caseId}</h2>
+      <p><strong>정답:</strong> ${answerKey[caseId]}</p>
+      <p><strong>정답률:</strong> ${pct}% (${correct}/${total})</p>
+      <div style="background:#ddd; height:12px; border-radius:6px;">
+        <div class="progress" style="width:${pct}%;"></div>
+      </div>
+    `;
+    statsContainer.appendChild(box);
+  });
+}
+
+loadStats();
+setInterval(loadStats, 5000); // 5초마다 실시간 갱신
+</script>
+
+</body>
+</html>
