@@ -1,27 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Form to Google Sheets</title>
+  <title>Google Sheets Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      line-height: 1.6;
+    }
+    label { display: block; margin-top: 15px; }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      font-size: 18px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
 </head>
+
 <body>
 
+<h2>문의하기</h2>
+
 <form id="myForm">
-  <label>이름: <input type="text" name="name" required></label><br><br>
-  <label>이메일: <input type="email" name="email" required></label><br><br>
-  <label>메시지: <input type="text" name="message" required></label><br><br>
+  <label>이름</label>
+  <input type="text" name="name" required>
+
+  <label>이메일</label>
+  <input type="email" name="email" required>
+
+  <label>메시지</label>
+  <textarea name="message" rows="5" required></textarea>
+
   <button type="submit">전송</button>
 </form>
 
 <p id="result"></p>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzkANXkUThrd31lwYKTG2w2Ywwsfja8DhPnCK0v14gWfODeDIvQxjtP9MReccTDkrxQ/exec";  // 여기에 웹앱 URL 넣기
+  const scriptURL = "https://script.google.com/macros/s/AKfycby98AGAxs5ILVZjd69F9DyyIvQFVjnXVSL4gARqGLp_uSwsJiUTIdUwAdS3JF9Y-w/exec";  // ⭐여기에 GAS 웹앱 URL 넣기
 
   document.getElementById("myForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const form = new FormData(e.target);
+
     const formData = {
       name: form.get("name"),
       email: form.get("email"),
@@ -31,15 +71,18 @@
     try {
       const response = await fetch(scriptURL, {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
 
-      document.getElementById("result").innerText = "전송되었습니다!";
+      const result = await response.json();
+      console.log("서버 응답:", result);
+
+      document.getElementById("result").innerText = "전송이 완료되었습니다!";
       e.target.reset();
     } catch (error) {
-      document.getElementById("result").innerText = "오류 발생: " + error;
+      console.error("오류:", error);
+      document.getElementById("result").innerText = "전송 중 오류가 발생했습니다.";
     }
   });
 </script>
