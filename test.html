@@ -2,22 +2,101 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Google Sheets Form</title>
+  <title>1~5번 케이스 입력폼</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      line-height: 1.7;
+    }
+    h2.case-title {
+      margin-top: 0;
+      font-size: 20px;
+    }
+    .case-box {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      background: #fafafa;
+    }
+
+    /* ⭐ 진한 블루 버튼 스타일 */
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      background: #003c8f;   /* 진한 블루 */
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #002f6c;   /* 더 진한 블루 */
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
-<h2>입력 폼</h2>
+<h1>케이스 평가 폼</h1>
 
 <form id="myForm">
-  <label>이름</label>
-  <input type="text" name="name" required>
 
-  <label>이메일</label>
-  <input type="email" name="email" required>
+  <!-- 1번 -->
+  <div class="case-box">
+    <h2 class="case-title">1번 케이스</h2>
+    <label><input type="radio" name="case1" value="준수" required> 준수</label><br>
+    <label><input type="radio" name="case1" value="오류"> 오류</label><br>
+    <label><input type="radio" name="case1" value="해당하지 않음"> 해당하지 않음</label><br>
+    <label><input type="radio" name="case1" value="모르겠다"> 모르겠다</label>
+  </div>
 
-  <label>메시지</label>
-  <textarea name="message" required></textarea>
+  <!-- 2번 -->
+  <div class="case-box">
+    <h2 class="case-title">2번 케이스</h2>
+    <label><input type="radio" name="case2" value="준수" required> 준수</label><br>
+    <label><input type="radio" name="case2" value="오류"> 오류</label><br>
+    <label><input type="radio" name="case2" value="해당하지 않음"> 해당하지 않음</label><br>
+    <label><input type="radio" name="case2" value="모르겠다"> 모르겠다</label>
+  </div>
+
+  <!-- 3번 -->
+  <div class="case-box">
+    <h2 class="case-title">3번 케이스</h2>
+    <label><input type="radio" name="case3" value="준수" required> 준수</label><br>
+    <label><input type="radio" name="case3" value="오류"> 오류</label><br>
+    <label><input type="radio" name="case3" value="해당하지 않음"> 해당하지 않음</label><br>
+    <label><input type="radio" name="case3" value="모르겠다"> 모르겠다</label>
+  </div>
+
+  <!-- 4번 -->
+  <div class="case-box">
+    <h2 class="case-title">4번 케이스</h2>
+    <label><input type="radio" name="case4" value="준수" required> 준수</label><br>
+    <label><input type="radio" name="case4" value="오류"> 오류</label><br>
+    <label><input type="radio" name="case4" value="해당하지 않음"> 해당하지 않음</label><br>
+    <label><input type="radio" name="case4" value="모르겠다"> 모르겠다</label>
+  </div>
+
+  <!-- 5번 -->
+  <div class="case-box">
+    <h2 class="case-title">5번 케이스</h2>
+    <label><input type="radio" name="case5" value="준수" required> 준수</label><br>
+    <label><input type="radio" name="case5" value="오류"> 오류</label><br>
+    <label><input type="radio" name="case5" value="해당하지 않음"> 해당하지 않음</label><br>
+    <label><input type="radio" name="case5" value="모르겠다"> 모르겠다</label>
+  </div>
 
   <button type="submit">전송</button>
 </form>
@@ -25,16 +104,18 @@
 <p id="result"></p>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxFVuhFNX5xkikxw3maUbtAl5aEQ99QHorOiujv96GcD0xUGJa25nPJlUxpfvG-b0MU/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxhx2N1Km3U2T9Or1GqZ6KqizljIgyMfQ1hKDvtPlKcCQqg57DsjZw0Q4-tWKTqhK0N/exec";
 
   document.getElementById("myForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const form = new FormData(e.target);
-    const formData = {
-      name: form.get("name"),
-      email: form.get("email"),
-      message: form.get("message")
+    const data = {
+      case1: form.get("case1"),
+      case2: form.get("case2"),
+      case3: form.get("case3"),
+      case4: form.get("case4"),
+      case5: form.get("case5")
     };
 
     try {
@@ -42,19 +123,18 @@
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(data)
       });
 
-      document.getElementById("result").innerText = "전송 완료!";
+      document.getElementById("result").innerText = "전송되었습니다!";
       e.target.reset();
 
     } catch (error) {
       console.error("오류:", error);
-      document.getElementById("result").innerText = "전송 실패!";
+      document.getElementById("result").innerText = "전송 중 오류 발생";
     }
   });
 </script>
 
 </body>
 </html>
-
