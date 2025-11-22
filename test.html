@@ -56,6 +56,7 @@
   <!-- 1번 -->
   <div class="case-box">
     <h2 class="case-title">1번 케이스</h2>
+    코드코드
     <label><input type="radio" name="case1" value="준수" required> 준수</label><br>
     <label><input type="radio" name="case1" value="오류"> 오류</label><br>
     <label><input type="radio" name="case1" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -126,12 +127,12 @@
         body: JSON.stringify(data)
       });
 
-      document.getElementById("result").innerText = "전송되었습니다!";
-      e.target.reset();
+      // ⭐ 저장 후 전송완료 페이지로 이동
+      window.location.href = "success.html";
 
     } catch (error) {
       console.error("오류:", error);
-      document.getElementById("result").innerText = "전송 중 오류 발생";
+      alert("전송 중 오류가 발생했습니다.");
     }
   });
 </script>
