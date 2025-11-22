@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>레이블과 네임</title>
+  <title>레이블과 네임 케이스</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,7 +62,7 @@
       margin-top: 20px;
       font-weight: normal;
     }
-      .case-area input {
+      .case-area input, .case-area select {
       padding: 5px;
       font-size: 0.9em;
     }
@@ -99,10 +99,10 @@
       <button class="case1-button" aria-label="닫기">X</button>
 
       <code aria-hidden="true">
-        <p>&lt;div class="case-area"&gt;<br /> &lt;button class="case1-button" aria-label="찾기"&gt;search&lt;/button&gt;<br /> &lt;/div&gt;</p>
+        <p>&lt;button class="case1-button" aria-label="닫기"&gt;X&lt;/button&gt;</p>
       </code>
     </div>
-    <p class="case-desc">설명: 버튼 내 텍스트는 알파벳 X가 있고, aria-label을 닫기로 제공함</p>
+    <p class="case-desc">설명: 화면에서 알파벳 X가 보이는 버튼이며, aria-label이 '닫기'로 적용되어 있음</p>
     <label><input type="radio" name="case1" value="준수"> 준수</label><br>
     <label><input type="radio" name="case1" value="오류"> 오류</label><br>
     <label><input type="radio" name="case1" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -121,7 +121,7 @@
       </code>
     </div>
       
-    <p class="case-desc">설명: 이메일 텍스트 아래 연락처라는 value값이 표시된 텍스트 입력폼이 있음</p>
+    <p class="case-desc">설명: '이메일' 텍스트 아래 입력란이 있음. 입력란에는 value 속성이 '연락처'로 적용되어 있고 추가로  aria-label이 '이메일'로 제공됨</p>
     <label><input type="radio" name="case2" value="준수"> 준수</label><br>
     <label><input type="radio" name="case2" value="오류"> 오류</label><br>
     <label><input type="radio" name="case2" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -140,7 +140,7 @@
         <p>&lt;a href="https://w3.org" aria-label="W3C 홈페이지"&gt;<br /> &lt;img src="https://www.w3.org/WAI/content-assets/wcag-act-rules/test-assets/shared/w3c-logo.png" alt="w3c 로고" /&gt;<br /> &lt;/a&gt;</p>
       </code>
     </div>
-    <p class="case-desc">설명: W3C로고 이미지 링크, 이미지 alt값은 w3c 로고이고 링크에 aria-label로 W3C 홈페이지라 제공</p>
+    <p class="case-desc">설명: W3C로고 이미지 링크가 있고, 이미지 alt값은 'w3c 로고'이며 링크에는 aria-label이 'W3C 홈페이지'로 제공됨</p>
       
     <label><input type="radio" name="case3" value="준수"> 준수</label><br>
     <label><input type="radio" name="case3" value="오류"> 오류</label><br>
@@ -151,6 +151,22 @@
   <!-- 4번 -->
   <div class="case-box">
     <h2 class="case-title">4번 케이스</h2>
+    <div class="case-area">
+      <label for="emailPart">이메일 주소</label>
+      <input type="text" id="emailPart" placeholder="입력해 주세요.">
+      <span class="txt_at">@</span>
+      <input type="text" id="emailDomain" placeholder="입력해 주세요.">   
+      <select title="이메일 도메인">
+        <option>직접 입력</option>
+        <option>gmail.com</option>
+        <option>kakao.com</option>
+        <option>naver.com</option>
+      </select>
+      <code aria-hidden="true">
+        <p>&lt;label for="emailPart"&gt;이메일 주소&lt;/label&gt;<br /> &lt;input type="text" id="emailPart" placeholder="입력해 주세요."&gt;<br /> &lt;span class="txt_at"&gt;@&lt;/span&gt;<br /> &lt;input type="text" id="emailDomain" placeholder="입력해 주세요."&gt; <br /> &lt;select title="이메일 도메인"&gt;<br /> &lt;option&gt;직접 입력&lt;/option&gt;<br /> &lt;option&gt;gmail.com&lt;/option&gt;<br /> &lt;option&gt;kakao.com&lt;/option&gt;<br /> &lt;option&gt;naver.com&lt;/option&gt;<br /> &lt;/select&gt;</p>
+      </code>
+    </div>
+    <p class="case-desc">설명: 화면에는 '이메일 주소'라는 텍스트 레이블이 있고 그 옆에 이메일 아이디를 입력하는 첫 번째 입력란, @ 텍스트, 도메인을 입력하는 두번째 입력란, 이메일 도메인을 선택할 수 있는 셀렉트 박스가 순서대로 배치 됨. 첫번재 두번째 입력란에는 placeholder로 '입력해 주세요'가, 셀렉트 박스는 첫번째 옵션인 '직접 입력'이 화면에 보여짐</p>
     <label><input type="radio" name="case4" value="준수"> 준수</label><br>
     <label><input type="radio" name="case4" value="오류"> 오류</label><br>
     <label><input type="radio" name="case4" value="해당하지 않음"> 해당하지 않음</label><br>
@@ -160,6 +176,13 @@
   <!-- 5번 -->
   <div class="case-box">
     <h2 class="case-title">5번 케이스</h2>
+    <div class="case-area">
+      <a href="https://w3.org" aria-label="다음 페이지">다음</a>
+      <code aria-hidden="true">
+        <p>&lt;a href="https://w3.org" aria-label="다음 페이지"&gt;다음&lt;/a&gt;</p>
+      </code>
+    </div>
+    <p class="case-desc">설명: 다음 텍스트 링크에 aria-label이 '다음 페이지'로 적용됨</p>
     <label><input type="radio" name="case5" value="준수"> 준수</label><br>
     <label><input type="radio" name="case5" value="오류"> 오류</label><br>
     <label><input type="radio" name="case5" value="해당하지 않음"> 해당하지 않음</label><br>
