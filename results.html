@@ -66,6 +66,7 @@
       <th>case3</th>
       <th>case4</th>
       <th>case5</th>
+      <th>case6</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -97,7 +98,8 @@
         case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
         case3: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
         case4: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case5: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 }
+        case5: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case6: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 }
       };
 
       data.forEach(row => {
@@ -109,10 +111,11 @@
           <td>${row.case3 || ""}</td>
           <td>${row.case4 || ""}</td>
           <td>${row.case5 || ""}</td>
+          <td>${row.case6 || ""}</td>
         `;
         tbody.appendChild(tr);
 
-        ["case1","case2","case3","case4","case5"].forEach(k => {
+        ["case1","case2","case3","case4","case5","case6"].forEach(k => {
           const val = row[k];
           if (categories.includes(val)) {
             stat[k][val]++;
@@ -134,7 +137,7 @@
           <tbody>
       `;
 
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 1; i <= 6; i++) {
         const key = `case${i}`;
         const values = [
           stat[key]["준수"],
