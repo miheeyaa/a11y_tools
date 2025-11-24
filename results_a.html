@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>담당자 전용 결과 페이지</title>
+  <title>제출된 데이터 보기 - admin</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body { 
       font-family: Arial, sans-serif; 
@@ -12,6 +13,19 @@
     }
     h1 { text-align: center; margin-bottom: 30px; }
 
+    .stats-box {
+      padding: 20px;
+      background: #f7f9ff;
+      border: 1px solid #d9e2f3;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    .stats-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #003c8f;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -24,17 +38,24 @@
     }
     th { background: #f4f4f4; }
     tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:nth-child(odd) { background: #fff; }
 
-    /* ⭐ 정답 강조 스타일 */
-    .correct {
-      background-color: #d9f7c8;
+
+    /* ⭐ 강조 스타일 */
+    .highlight {
+      background-color: #fff7c2;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<h1>담당자 전용 전체 응답 데이터</h1>
+<h1>제출된 결과</h1>
+
+<div class="stats-box">
+  <div id="stats-title" class="stats-title">응답 통계 요약</div>
+  <div id="stats"></div>
+</div>
 
 <table id="table">
   <thead>
@@ -52,7 +73,34 @@
 </table>
 
 <script>
+  const sheetID = "10zeC7G3rpjGmSN0kKhEsLoCviETcnwjz5Xvjq9ZJsXk";
+  const sheetName = "Sheet1";
+  const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+
   async function loadData() {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const tbody = document.querySelector("#table tbody");
+      const statsBox = document.getElementById("stats");
+      const statsTitle = document.getElementById("stats-title");
+
+      tbody.innerHTML = "";
+      statsBox.innerHTML = "";
+
+      const totalResponses = data.length;
+      statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
+
+      const categories = ["준수", "오류", "해당하지 않음", "판단어려움"];
+      const stat = {
+        case1: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case3: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case4: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case5: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
+        case6: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 }
+      };async function loadData() {
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -67,7 +115,7 @@
     const totalResponses = data.length;
     statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
 
-    // ⭐ 정답표 정의
+    // 정답표
     const answerKey = {
       case1: "해당하지 않음",
       case2: "해당하지 않음",
@@ -77,27 +125,174 @@
       case6: "해당하지 않음"
     };
 
-    // ⭐ 전체 정답 수 누적
+    // 정답 수 집계
     let totalCorrectCount = 0;
-    const totalQuestions = 6 * totalResponses;
-
-    // ⭐ 케이스별 정답 수
     const correctCountByCase = {
-      case1: 0,
-      case2: 0,
-      case3: 0,
-      case4: 0,
-      case5: 0,
-      case6: 0
+      case1: 0, case2: 0, case3: 0,
+      case4: 0, case5: 0, case6: 0
     };
 
-    // ⭐ 통계 집계용 초기값
-    const categories = ["준수", "오류", "해당하지 않음", "모르겠다"];
-    const stat = {
-      case1: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-      case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
-      case3: { 준수: 0, 오류: 0, "해당하지
+    // 케이스 분포 통계
+    const options = ["준수", "오류", "해당하지 않음", "모르겠다"];
+    const stat = {};
+    for (let i = 1; i <= 6; i++) {
+      stat[`case${i}`] = { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 };
+    }
 
+    // 개별 응답의 정답 개수
+    const individualScores = [];
+
+    // 데이터 렌더링 + 통계 집계
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.timestamp || ""}</td>
+        <td>${row.case1 || ""}</td>
+        <td>${row.case2 || ""}</td>
+        <td>${row.case3 || ""}</td>
+        <td>${row.case4 || ""}</td>
+        <td>${row.case5 || ""}</td>
+        <td>${row.case6 || ""}</td>
+      `;
+      tbody.appendChild(tr);
+
+      let correctPerPerson = 0;
+
+      ["case1", "case2", "case3", "case4", "case5", "case6"].forEach(key => {
+        const val = row[key];
+
+        if (options.includes(val)) {
+          stat[key][val]++;
+        }
+
+        if (val === answerKey[key]) {
+          totalCorrectCount++;
+          correctCountByCase[key]++;
+          correctPerPerson++;
+        }
+      });
+
+      individualScores.push(correctPerPerson);
+    });
+
+    // 전체 정답률
+    const totalQuestions = 6 * totalResponses;
+    const accuracy = (totalCorrectCount / totalQuestions * 100).toFixed(1);
+
+    // 평균 정답 수
+    const avgCorrect = (totalCorrectCount / totalResponses).toFixed(1);
+
+    // 중앙값
+    const sortedScores = [...individualScores].sort((a,b)=> a-b);
+    const medianCorrect = sortedScores.length ?
+      sortedScores[Math.floor(sortedScores.length / 2)] : 0;
+
+    // 케이스별 정답률
+    const caseAcc = {};
+    for (let i = 1; i <= 6; i++) {
+      const key = `case${i}`;
+      caseAcc[key] = totalResponses === 0 ? 0 :
+        (correctCountByCase[key] / totalResponses * 100).toFixed(1);
+    }
+
+    // 난이도 분석
+    const hardest = Object.entries(caseAcc).sort((a,b)=> a[1]-b[1])[0];
+    const easiest = Object.entries(caseAcc).sort((a,b)=> b[1]-a[1])[0];
+
+    // 상단 통계 UI 렌더링
+    statsBox.innerHTML = `
+      <p><strong>전체 정답률: ${accuracy}%</strong></p>
+
+      <p>평균 정답 수: ${avgCorrect} / 6</p>
+      <p>중앙값 정답 수: ${medianCorrect}개</p>
+
+      <p>가장 쉬운 케이스: <strong>${easiest[0]}</strong> (${easiest[1]}%)</p>
+      <p>가장 어려운 케이스: <strong>${hardest[0]}</strong> (${hardest[1]}%)</p>
+
+      <hr />
+
+      <p><strong>케이스별 정답률</strong></p>
+      <ul>
+        ${Object.entries(caseAcc)
+          .map(([k,v]) => `<li>${k}: ${v}%</li>`)
+          .join("")}
+      </ul>
+      <hr />
+    `;
+  } catch (e) {
+    console.error("데이터 불러오기 오류:", e);
+  }
+}
+loadData();
+
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.timestamp || ""}</td>
+          <td>${row.case1 || ""}</td>
+          <td>${row.case2 || ""}</td>
+          <td>${row.case3 || ""}</td>
+          <td>${row.case4 || ""}</td>
+          <td>${row.case5 || ""}</td>
+          <td>${row.case6 || ""}</td>
+        `;
+        tbody.appendChild(tr);
+
+        ["case1","case2","case3","case4","case5","case6"].forEach(k => {
+          const val = row[k];
+          if (categories.includes(val)) {
+            stat[k][val]++;
+          }
+        });
+      });
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>케이스</th>
+              <th>준수</th>
+              <th>오류</th>
+              <th>해당없음</th>
+              <th>판단어려움</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      for (let i = 1; i <= 6; i++) {
+        const key = `case${i}`;
+        const values = [
+          stat[key]["준수"],
+          stat[key]["오류"],
+          stat[key]["해당하지 않음"],
+          stat[key]["판단어려움"]
+        ];
+
+        // ⭐ 각 케이스에서 최대값 계산
+        const maxValue = Math.max(...values);
+
+        html += `
+          <tr>
+            <td>${i}번</td>
+            <td class="${values[0] === maxValue ? "highlight" : ""}">${values[0]}</td>
+            <td class="${values[1] === maxValue ? "highlight" : ""}">${values[1]}</td>
+            <td class="${values[2] === maxValue ? "highlight" : ""}">${values[2]}</td>
+            <td class="${values[3] === maxValue ? "highlight" : ""}">${values[3]}</td>
+          </tr>
+        `;
+      }
+
+      html += `</tbody></table>`;
+      statsBox.innerHTML = html;
+
+    } catch (error) {
+      console.error("데이터 불러오기 오류:", error);
+    }
+  }
+
+  loadData();
 </script>
 
 </body>
