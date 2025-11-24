@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>담당자 전용 결과 페이지</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 900px; 
+      margin: 40px auto; 
+      line-height: 1.6;
+    }
+    h1 { text-align: center; margin-bottom: 30px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th { background: #f4f4f4; }
+    tbody tr:nth-child(even) { background: #fafafa; }
+
+    /* ⭐ 정답 강조 스타일 */
+    .correct {
+      background-color: #d9f7c8;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>담당자 전용 전체 응답 데이터</h1>
+
+<table id="table">
+  <thead>
+    <tr>
+      <th>시간</th>
+      <th>case1</th>
+      <th>case2</th>
+      <th>case3</th>
+      <th>case4</th>
+      <th>case5</th>
+      <th>case6</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  async function loadData() {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const tbody = document.querySelector("#table tbody");
+    const statsBox = document.getElementById("stats");
+    const statsTitle = document.getElementById("stats-title");
+
+    tbody.innerHTML = "";
+    statsBox.innerHTML = "";
+
+    const totalResponses = data.length;
+    statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
+
+    // ⭐ 정답표 정의
+    const answerKey = {
+      case1: "해당하지 않음",
+      case2: "해당하지 않음",
+      case3: "해당하지 않음",
+      case4: "해당하지 않음",
+      case5: "준수",
+      case6: "해당하지 않음"
+    };
+
+    // ⭐ 전체 정답 수 누적
+    let totalCorrectCount = 0;
+    const totalQuestions = 6 * totalResponses;
+
+    // ⭐ 케이스별 정답 수
+    const correctCountByCase = {
+      case1: 0,
+      case2: 0,
+      case3: 0,
+      case4: 0,
+      case5: 0,
+      case6: 0
+    };
+
+    // ⭐ 통계 집계용 초기값
+    const categories = ["준수", "오류", "해당하지 않음", "모르겠다"];
+    const stat = {
+      case1: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+      case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 },
+      case3: { 준수: 0, 오류: 0, "해당하지
+
+</script>
+
+</body>
+</html>
