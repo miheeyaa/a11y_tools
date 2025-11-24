@@ -67,6 +67,7 @@
       <th>case4</th>
       <th>case5</th>
       <th>case6</th>
+      <th>case7</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -92,14 +93,16 @@
       const totalResponses = data.length;
       statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
 
-      const categories = ["준수", "오류", "해당하지 않음", "판단어려움"];
+      const categories = ["준수", "오류", "대상아님", "판단불가"];
       const stat = {
-        case1: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case2: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case3: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case4: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case5: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 },
-        case6: { 준수: 0, 오류: 0, "해당하지 않음": 0, 판단어려움: 0 }
+        case1: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case2: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case3: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case4: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case5: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case6: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 },
+        case7: { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 }
+
       };async function loadData() {
   try {
     const response = await fetch(url);
@@ -117,12 +120,12 @@
 
     // 정답표
     const answerKey = {
-      case1: "해당하지 않음",
-      case2: "해당하지 않음",
-      case3: "해당하지 않음",
-      case4: "해당하지 않음",
+      case1: "대상아님",
+      case2: "대상아님",
+      case3: "대상아님",
+      case4: "대상아님",
       case5: "준수",
-      case6: "해당하지 않음"
+      case6: "대상아님"
     };
 
     // 정답 수 집계
@@ -133,10 +136,10 @@
     };
 
     // 케이스 분포 통계
-    const options = ["준수", "오류", "해당하지 않음", "모르겠다"];
+    const options = ["준수", "오류", "대상아님", "판단불가"];
     const stat = {};
     for (let i = 1; i <= 6; i++) {
-      stat[`case${i}`] = { 준수: 0, 오류: 0, "해당하지 않음": 0, 모르겠다: 0 };
+      stat[`case${i}`] = { 준수: 0, 오류: 0, "대상아님": 0, 판단불가: 0 };
     }
 
     // 개별 응답의 정답 개수
@@ -153,12 +156,14 @@
         <td>${row.case4 || ""}</td>
         <td>${row.case5 || ""}</td>
         <td>${row.case6 || ""}</td>
+        <td>${row.case7 || ""}</td>
+
       `;
       tbody.appendChild(tr);
 
       let correctPerPerson = 0;
 
-      ["case1", "case2", "case3", "case4", "case5", "case6"].forEach(key => {
+      ["case1", "case2", "case3", "case4", "case5", "case6", "case7"].forEach(key => {
         const val = row[key];
 
         if (options.includes(val)) {
@@ -176,7 +181,7 @@
     });
 
     // 전체 정답률
-    const totalQuestions = 6 * totalResponses;
+    const totalQuestions = 7 * totalResponses;
     const accuracy = (totalCorrectCount / totalQuestions * 100).toFixed(1);
 
     // 평균 정답 수
@@ -189,7 +194,7 @@
 
     // 케이스별 정답률
     const caseAcc = {};
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 7; i++) {
       const key = `case${i}`;
       caseAcc[key] = totalResponses === 0 ? 0 :
         (correctCountByCase[key] / totalResponses * 100).toFixed(1);
@@ -203,7 +208,7 @@
     statsBox.innerHTML = `
       <p><strong>전체 정답률: ${accuracy}%</strong></p>
 
-      <p>평균 정답 수: ${avgCorrect} / 6</p>
+      <p>평균 정답 수: ${avgCorrect} / 7</p>
       <p>중앙값 정답 수: ${medianCorrect}개</p>
 
       <p>가장 쉬운 케이스: <strong>${easiest[0]}</strong> (${easiest[1]}%)</p>
@@ -236,10 +241,12 @@ loadData();
           <td>${row.case4 || ""}</td>
           <td>${row.case5 || ""}</td>
           <td>${row.case6 || ""}</td>
+          <td>${row.case7 || ""}</td>
+
         `;
         tbody.appendChild(tr);
 
-        ["case1","case2","case3","case4","case5","case6"].forEach(k => {
+        ["case1","case2","case3","case4","case5","case6","case7"].forEach(k => {
           const val = row[k];
           if (categories.includes(val)) {
             stat[k][val]++;
@@ -255,19 +262,19 @@ loadData();
               <th>준수</th>
               <th>오류</th>
               <th>해당없음</th>
-              <th>판단어려움</th>
+              <th>판단불가</th>
             </tr>
           </thead>
           <tbody>
       `;
 
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 7; i++) {
         const key = `case${i}`;
         const values = [
           stat[key]["준수"],
           stat[key]["오류"],
-          stat[key]["해당하지 않음"],
-          stat[key]["판단어려움"]
+          stat[key]["대상아님"],
+          stat[key]["판단불가"]
         ];
 
         // ⭐ 각 케이스에서 최대값 계산
