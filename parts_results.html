@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 전용 응답 분석 페이지</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 40px auto;
+      line-height: 1.6;
+    }
+    h1 { text-align: center; margin-bottom: 30px; }
+
+    .stats-box {
+      padding: 20px;
+      background: #f7f9ff;
+      border: 1px solid #d9e2f3;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    .stats-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #003c8f;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th { background: #f4f4f4; }
+
+    .correct {
+      background-color: #d9f7c8 !important;
+      font-weight: bold;
+    }
+    .wrong {
+      background-color: #ffd5d5 !important;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>관리자 전용 결과 분석</h1>
+
+<div class="stats-box">
+  <div id="stats-title" class="stats-title">응답 통계 요약</div>
+  <div id="stats"></div>
+</div>
+
+<table id="table">
+  <thead>
+    <tr>
+      <th>시간</th>
+      <th>이름</th>
+      <th>case1</th>
+      <th>case2</th>
+      <th>case3</th>
+      <th>case4</th>
+      <th>case5</th>
+      <th>case6</th>
+      <th>case7</th>
+      <th>정답 수</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const sheetID = "1PmEP7KT_-4GUVdj3zAom-KFFcul4V33ZiqXphQQB33Q";
+  const sheetName = "Sheet1";
+  const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
+
+  // 정답표
+  const answerKey = {
+    case1: "해당하지 않음",
+    case2: "해당하지 않음",
+    case3: "해당하지 않음",
+    case4: "해당하지 않음",
+    case5: "준수",
+    case6: "해당하지 않음",
+    case7: "해당하지 않음"
+  };
+
+  async function loadData() {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const tbody = document.querySelector("#table tbody");
+      const statsBox = document.getElementById("stats");
+      const statsTitle = document.getElementById("stats-title");
+
+      tbody.innerHTML = "";
+      statsBox.innerHTML = "";
+
+      const totalResponses = data.length;
+      statsTitle.textContent = `응답 통계 요약 (총 응답 수: ${totalResponses}건)`;
+
+      let totalCorrect = 0;
+      const correctByCase = {
+        case1: 0, case2: 0, case3: 0,
+        case4: 0, case5: 0, case6: 0, case7: 0
+      };
+      const individualScores = [];
+
+      data.forEach(row => {
+        let correctCount = 0;
+
+        // 행 렌더링
+        let rowHTML = `
+          <td>${row.timestamp || ""}</td>
+          <td>${row.username || ""}</td>
+        `;
+
+        for (let i = 1; i <= 7; i++) {
+          const key = `case${i}`;
+          const val = row[key];
+          const isCorrect = val === answerKey[key];
+
+          if (isCorrect) {
+            correctCount++;
+            correctByCase[key]++;
+          }
+
+          rowHTML += `
+            <td class="${isCorrect ? 'correct' : 'wrong'}">${val || ""}</td>
+          `;
+        }
+
+        totalCorrect += correctCount;
+        individualScores.push(correctCount);
+
+        rowHTML += `<td><strong>${correctCount}</strong></td>`;
+        const tr = document.createElement("tr");
+        tr.innerHTML = rowHTML;
+        tbody.appendChild(tr);
+      });
+
+      // 전체 정답률
+      const totalQuestions = totalResponses * 7;
+      const totalAccuracy = ((totalCorrect / totalQuestions) * 100).toFixed(1);
+
+      // 평균 정답 개수
+      const avgScore = (totalCorrect / totalResponses).toFixed(1);
+
+      // 중앙값
+      const sortedScores = [...individualScores].sort((a,b)=>a-b);
+      const medianScore = sortedScores[Math.floor(sortedScores.length / 2)];
+
+      // 케이스별 정답률
+      const caseAcc = {};
+      for (let i = 1; i <= 7; i++) {
+        const key = `case${i}`;
+        caseAcc[key] = ((correctByCase[key] / totalResponses) * 100).toFixed(1);
+      }
+
+      // 난이도 분석
+      const hardest = Object.entries(caseAcc).sort((a,b)=>a[1]-b[1])[0];
+      const easiest = Object.entries(caseAcc).sort((a,b)=>b[1]-a[1])[0];
+
+      // 출력
+      statsBox.innerHTML = `
+        <p><strong>전체 정답률: ${totalAccuracy}%</strong></p>
+
+        <p>평균 정답 수: ${avgScore} / 7</p>
+        <p>중앙값 정답 수: ${medianScore}개</p>
+
+        <p>가장 쉬운 케이스: <strong>${easiest[0]}</strong> (${easiest[1]}%)</p>
+        <p>가장 어려운 케이스: <strong>${hardest[0]}</strong> (${hardest[1]}%)</p>
+
+        <hr/>
+        <h3>케이스별 정답률</h3>
+        <ul>
+          ${
+            Object.entries(caseAcc)
+              .map(([k,v]) => `<li>${k}: ${v}%</li>`)
+              .join("")
+          }
+        </ul>
+        <hr/>
+      `;
+    } catch (error) {
+      console.error("데이터 불러오기 오류:", error);
+    }
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>
