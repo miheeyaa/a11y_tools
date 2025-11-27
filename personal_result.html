@@ -69,21 +69,24 @@
         <tr>
           <th>케이스</th>
           <th>내 답</th>
+          <th>정답</th>
           <th>결과</th>
         </tr>
       </thead>
       <tbody>
   `;
 
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= 6; i++) {
     const key = `case${i}`;
     const my = answers[key];
+    const correct = answerKey[key];
     const isCorrect = my === correct;
 
     tableHTML += `
       <tr>
         <td>${i}번</td>
         <td>${my}</td>
+        <td>${correct}</td>
         <td class="${isCorrect ? 'correct' : 'wrong'}">
           ${isCorrect ? '정답' : '오답'}
         </td>
