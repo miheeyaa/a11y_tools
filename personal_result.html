@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>개인 결과 확인</title>
+  <style>
+    body { font-family: Arial; max-width: 800px; margin: 40px auto; line-height: 1.6; }
+    .correct { background: #d9f7c8; font-weight: bold; }
+    .wrong   { background: #ffd5d5; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background: #f7f7f7; }
+  </style>
+</head>
+<body>
+
+<h1>개인 결과 확인</h1>
+
+<div id="summary"></div>
+<div id="result-table"></div>
+
+<script>
+  // URL에서 값 읽기
+  const params = new URLSearchParams(window.location.search);
+
+  const username = params.get("username");
+  const answers = {
+    case1: params.get("case1"),
+    case2: params.get("case2"),
+    case3: params.get("case3"),
+    case4: params.get("case4"),
+    case5: params.get("case5"),
+    case6: params.get("case6"),
+    case7: params.get("case7")
+  };
+
+  // 정답표
+  const answerKey = {
+    case1: "해당하지 않음",
+    case2: "해당하지 않음",
+    case3: "해당하지 않음",
+    case4: "해당하지 않음",
+    case5: "준수",
+    case6: "해당하지 않음",
+    case7: "오류"
+  };
+
+  // 정답 수 계산
+  let correctCount = 0;
+  Object.keys(answers).forEach(key => {
+    if (answers[key] === answerKey[key]) {
+      correctCount++;
+    }
+  });
+
+  const accuracy = ((correctCount / 7) * 100).toFixed(1);
+
+  // 상단 요약 출력
+  document.getElementById("summary").innerHTML = `
+    <h2>${username}님의 결과</h2>
+    <p>정답 개수: ${correctCount} / 6</p>
+    <p>정답률: ${accuracy}%</p>
+  `;
+
+  // 결과 표 생성
+  let tableHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>케이스</th>
+          <th>내 답</th>
+          <th>정답</th>
+          <th>결과</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (let i = 1; i <= 7; i++) {
+    const key = `case${i}`;
+    const my = answers[key];
+    const correct = answerKey[key];
+    const isCorrect = my === correct;
+
+    tableHTML += `
+      <tr>
+        <td>${i}번</td>
+        <td>${my}</td>
+        <td>${correct}</td>
+        <td class="${isCorrect ? 'correct' : 'wrong'}">
+          ${isCorrect ? '정답' : '오답'}
+        </td>
+      </tr>
+    `;
+  }
+
+  tableHTML += "</tbody></table>";
+  document.getElementById("result-table").innerHTML = tableHTML;
+</script>
+
+</body>
+</html>
