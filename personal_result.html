@@ -58,7 +58,7 @@
   // 상단 요약 출력
   document.getElementById("summary").innerHTML = `
     <h2>${username}님의 결과</h2>
-    <p>정답 개수: ${correctCount} / 6</p>
+    <p>정답 개수: ${correctCount} / 7/p>
     <!-- p>정답률: ${accuracy}%</p -->
   `;
 
@@ -76,7 +76,7 @@
       <tbody>
   `;
 
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 7; i++) {
     const key = `case${i}`;
     const my = answers[key];
     const correct = answerKey[key];
