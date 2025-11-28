@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>접근성팀 포츈 메시지</title>
+<style>
+  body {
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+    background: #f9fafb;
+    color: #222;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 700px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #8b5cf6;
+    margin-bottom: 8px;
+  }
+  .msg-number {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+  .message {
+    font-size: 24px;
+    font-weight: 600;
+    white-space: pre-line;
+  }
+  .error {
+    font-size: 20px;
+    color: #d32f2f;
+    font-weight: bold;
+  }
+  .hint {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #777;
+  }
+  code {
+    background: #eee;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  @media (max-width: 480px) {
+    body { padding: 20px; }
+    .container { padding: 30px 20px; }
+    .message { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">접근성팀 송년 포츈 메시지</div>
+  <div id="output"></div>
+</div>
+
+<script>
+// 1. 포츈 메시지 30개
+const messages = {
+  "01": "오늘의 작은 판단 하나가, 내년의 큰 개선으로 이어질 거예요.",
+  "02": "당신의 기록은 올해 지나도 남아서, 누군가의 길잡이가 됩니다.",
+  "03": "보이지 않는 수고라도, 접근성에서는 반드시 누군가에게 닿습니다.",
+  "04": "올해 했던 노력은 모두 축적되어, 더 나은 서비스의 기초가 됩니다.",
+  "05": "실제로 바뀌지 못한 부분이 있어도, 당신이 만든 ‘기준’은 남아 있습니다.",
+  "06": "올해의 피드백은 내년의 해결책이 됩니다.",
+  "07": "당신의 꼼꼼함 덕분에 더 많은 사용자가 디지털 세계에 가까워졌습니다.",
+  "08": "사용자의 어려움을 이해하려는 마음 자체가 이미 큰 변화입니다.",
+  "09": "작은 발견 하나가, 누군가에게는 서비스 전체를 여는 열쇠가 됩니다.",
+  "10": "어떤 개선은 수개월 뒤에 티가 나지만, 당신의 노력은 지금도 의미 있어요.",
+  "11": "한 번 더 확인해준 그 순간들이 쌓여, 모두에게 편한 서비스가 됩니다.",
+  "12": "올해 당신이 남긴 기록은 팀 전체의 미래 실력입니다.",
+  "13": "사용자의 목소리를 대신 전한 당신의 노력이, 더 많은 사람을 돕습니다.",
+  "14": "실패처럼 보인 시도도, 접근성에서는 반드시 의미가 있습니다.",
+  "15": "올해의 분석은 내년의 품질을 바꾸는 설계도입니다.",
+  "16": "당신이 찾은 문제는 누군가의 장벽을 없앤 첫걸음이에요.",
+  "17": "다른 팀이 몰라도, 우리는 알아요. 올해 당신이 정말 많이 애썼다는 것을.",
+  "18": "서비스가 완벽하지 않아도 괜찮아요. 당신의 시도는 이미 가치 있습니다.",
+  "19": "눈에 보이지 않는 장애물이 줄어든 건, 당신 덕분입니다.",
+  "20": "‘이건 문제인가?’ 하고 멈춰 선 그 순간들이 모두 변화를 만들었습니다.",
+  "21": "사용자 테스트에서 흘린 땀은 누군가의 일상을 지켜줍니다.",
+  "22": "조용히 쌓은 원칙이, 앞으로 만드는 모든 화면의 기준이 됩니다.",
+  "23": "올해 힘들었던 만큼, 내년에는 더 단단한 팀이 되어 있을 거예요.",
+  "24": "당신이 발견한 한 줄의 문제는, 많은 사용자의 불편을 막았습니다.",
+  "25": "완벽하지 않아도 괜찮아요. 중요한 건 계속 이해하려는 마음입니다.",
+  "26": "당신의 피드백은 서비스의 미래를 바꾸는 가장 확실한 투자입니다.",
+  "27": "올해의 고생은 팀의 성장곡선 위에 남아 있습니다.",
+  "28": "누군가에게는 보이지 않는 일이었겠지만, 분명 큰 차이를 만들었습니다.",
+  "29": "오늘의 접근성 점검이, 누군가의 ‘할 수 있다’는 경험을 만듭니다.",
+  "30": "당신이 애쓴 모든 순간은 올해의 가장 확실한 ‘개선’입니다."
+};
+
+// 2. URL 파라미터에서 번호 읽기 (?01 → "01")
+const params = new URLSearchParams(window.location.search);
+const id = params.keys().next().value;  // 파라미터 이름 자체를 번호로 사용
+
+const output = document.getElementById("output");
+
+// 3. 메시지 출력
+if (!id) {
+  output.innerHTML = `
+    <div class="error">메시지 번호가 전달되지 않았어요.</div>
+    <div class="hint">
+      포츈쿠키에서 뽑은 번호를 URL 끝에 붙여주세요.<br>
+      예시: <code>?01</code>, <code>?15</code>, <code>?30</code>
+    </div>
+  `;
+} else if (!messages[id]) {
+  output.innerHTML = `
+    <div class="error">메시지 <strong>${id}</strong> 를 찾을 수 없습니다.</div>
+    <div class="hint">01 ~ 30 사이의 번호를 사용해 주세요.</div>
+  `;
+} else {
+  output.innerHTML = `
+    <div class="msg-number">포츈 번호: ${id}</div>
+    <div class="message">${messages[id]}</div>
+  `;
+}
+</script>
+
+</body>
+</html>
