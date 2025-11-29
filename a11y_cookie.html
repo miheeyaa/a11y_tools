@@ -1,134 +1,310 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>접근성팀 포츈 메시지</title>
-<style>
-  body {
-    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-    margin: 0;
-    padding: 30px;
-    background: #f9fafb;
-    color: #222;
-    line-height: 1.6;
-  }
-  .container {
-    max-width: 700px;
-    margin: auto;
-    background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-  }
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #8b5cf6;
-    margin-bottom: 8px;
-  }
-  .msg-number {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 16px;
-  }
-  .message {
-    font-size: 24px;
-    font-weight: 600;
-    white-space: pre-line;
-  }
-  .error {
-    font-size: 20px;
-    color: #d32f2f;
-    font-weight: bold;
-  }
-  .hint {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #777;
-  }
-  code {
-    background: #eee;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  @media (max-width: 480px) {
-    body { padding: 20px; }
-    .container { padding: 30px 20px; }
-    .message { font-size: 20px; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>접근성팀 포츈쿠키</title>
+
+  <style>
+    :root {
+      --bg: #f7efe3;
+      --card-bg: #ffffff;
+      --accent: #7c3aed;   /* 보라 포인트 */
+      --accent-soft: #ede9fe;
+      --text-main: #1f2933;
+      --text-sub: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top, #fbe8c8 0, var(--bg) 55%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.15);
+      padding: 24px 20px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(circle at -10% 0, rgba(255, 255, 255, 0.4), transparent 55%),
+        radial-gradient(circle at 110% 100%, rgba(252, 211, 77, 0.35), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge span {
+      font-size: 14px;
+    }
+
+    .brand {
+      font-size: 13px;
+      color: var(--text-sub);
+      text-align: right;
+    }
+
+    .cookie-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #facc6b, #eab308);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(148, 87, 0, 0.25);
+    }
+
+    .number-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .number-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      background: #f9f5ff;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .number-pill strong {
+      font-size: 18px;
+      margin-left: 4px;
+    }
+
+    .fortune-text {
+      text-align: center;
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.6;
+      margin-bottom: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--text-sub);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .hint code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    @media (max-width: 360px) {
+      .fortune-text {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
+<main aria-live="polite">
+  <div class="card" role="group" aria-label="포츈쿠키 메시지">
+    <div class="card-inner">
 
-<div class="container">
-  <div class="title">접근성팀 송년 포츈 메시지</div>
-  <div id="output"></div>
-</div>
+      <header>
+        <div class="badge">
+          <div class="cookie-icon" aria-hidden="true">🥠</div>
+          <span>접근성팀 송년 포츈쿠키</span>
+        </div>
+        <div class="brand">
+          올해도<br />수고 많으셨어요
+        </div>
+      </header>
+
+      <div id="fortune-content">
+        <!-- JS가 이 안에 번호 & 메시지를 채웁니다 -->
+      </div>
+
+      <footer>
+        번호는 우연히 뽑았지만,<br />
+        메시지는 모두 여러분을 위한 진심입니다.
+      </footer>
+    </div>
+  </div>
+</main>
 
 <script>
-// 1. 포츈 메시지 30개
-const messages = {
-  "01": "올해 당신이 쏟은 시간과 열정, 단 하나도 헛되지 않았어요.",
-  "02": "개선이 바로 반영되지 않아도 괜찮아요. 당신은 정말 충분히 해냈습니다.",
-  "03": "한 해 동안 너무 수고 많았어요. 당신의 전문성이 우리 팀을 더욱 단단하게 만들었어요.",
-  "04": "포기하고 싶었던 순간에도 끝까지 해낸 당신, 정말 멋있어요.",
-  "05": "때로는 인정받지 못하는 것 같아도, 당신의 가치는 절대 변하지 않아요.",
-  "06": "리포트 너머에 담긴 당신의 진심, 분명 누군가에게 닿았을 거예요.",
-  "07": "접근성의 길은 아직 멀지만, 당신 같은 동료가 있어서 정말 든든해요.",
-  "08": "눈에 보이는 결과가 없어도 괜찮아요. 당신의 노력은 영원히 빛나니까요.",
-  "09": "올해도 묵묵히 자리를 지켜줘서 고마워요. 당신이 있어 다행이에요.",
-  "10": "당신이 발견한 작은 문제 하나가 누군가에게는 세상을 열어준 열쇠였어요.",
-  "11": "한 해 동안 정말정말 고생 많으셨어요. 당신은 충분히, 아주 잘하고 있어요.",
-  "12": "다른 팀이 몰라줘도 괜찮아요. 우리는 알고 있어요, 당신이 올해 얼마나 애썼는지.",
-  "13": "보이지 않는 곳에서의 노력이야말로 가장 아름답게 빛나는 변화예요.",
-  "14": "변화가 더디게 느껴질 때도 있죠. 그래도 당신의 목소리는 분명히 들리고 있어요.",
-  "15": "당신이 놓치지 않은 그 작은 디테일 하나가, 누군가에게는 전부였을 거예요.",
-  "16": "느리더라도 괜찮아요. 우리는 분명 앞으로 나아가고 있어요, 당신과 함께.",
-  "17": "올해 당신이 만든 변화, 기록과 함께 사람들 마음속에 남을 거예요.",
-  "18": "한 대체텍스트, 한 포커스, 한 레이블까지. 당신이 챙긴 모든 순간이 정말 소중했어요.",
-  "19": "화면 너머 보이지 않는 사용자를 생각해준 당신의 마음, 그게 진짜 접근성이에요.",
-  "20": "변화는 천천히 와도 괜찮아요. 당신이 만든 작은 파장들은 계속 퍼져나갈 테니까요.",
-  "21": "올해의 마지막 메시지예요. 당신은 우리 팀의 자랑이에요. 새해에도 함께 해요!",
-  "22": "올해 했던 모든 노력은 차곡차곡 쌓여서, 더 나은 서비스의 든든한 기초가 됐어요.",
-  "23": "실제로 바뀌지 못한 부분이 있어도 괜찮아요. 당신이 세운 '기준'만큼은 남아 있으니까요.",
-  "24": "올해 당신이 남긴 모든 기록, 그게 바로 우리 팀의 미래 실력이에요.",
-  "25": "서비스가 아직 완벽하지 않아도 괜찮아요. 당신의 시도 하나하나가 이미 충분히 가치 있어요.",
-  "26": "올해 힘든 만큼, 내년에는 우리 더 단단한 팀이 되어 있을 거예요.",
-  "27": "완벽하지 않아도 괜찮아요. 중요한 건 계속 이해하려고 노력하는 그 마음이니까요.",
-  "28": "올해의 모든 고생, 우리 팀의 성장곡선 위에 고스란히 남아 있어요.",
-  "29": "누군가에게는 보이지 않는 일이었을 수도 있어요. 하지만 분명 큰 차이를 만들었어요.",
-  "30": "당신이 애쓴 모든 순간 하나하나가, 올해 우리가 이룬 가장 확실한 '개선'이에요."
-};
+  // 1. 포츈 메시지 30개
+  const messages = {
+    "01": "올해 당신이 쏟은 시간과 열정, 단 하나도 헛되지 않았어요.",
+    "02": "개선이 바로 반영되지 않아도 괜찮아요. 당신은 정말 충분히 해냈습니다.",
+    "03": "한 해 동안 너무 수고 많았어요. 당신의 전문성이 우리 팀을 더욱 단단하게 만들었어요.",
+    "04": "포기하고 싶었던 순간에도 끝까지 해낸 당신, 정말 멋있어요.",
+    "05": "때로는 인정받지 못하는 것 같아도, 당신의 가치는 절대 변하지 않아요.",
+    "06": "리포트 너머에 담긴 당신의 진심, 분명 누군가에게 닿았을 거예요.",
+    "07": "접근성의 길은 아직 멀지만, 당신 같은 동료가 있어서 정말 든든해요.",
+    "08": "눈에 보이는 결과가 없어도 괜찮아요. 당신의 노력은 영원히 빛나니까요.",
+    "09": "올해도 묵묵히 자리를 지켜줘서 고마워요. 당신이 있어 다행이에요.",
+    "10": "당신이 발견한 작은 문제 하나가 누군가에게는 세상을 열어준 열쇠였어요.",
+    "11": "한 해 동안 정말정말 고생 많으셨어요. 당신은 충분히, 아주 잘하고 있어요.",
+    "12": "다른 팀이 몰라줘도 괜찮아요. 우리는 알고 있어요, 당신이 올해 얼마나 애썼는지.",
+    "13": "보이지 않는 곳에서의 노력이야말로 가장 아름답게 빛나는 변화예요.",
+    "14": "변화가 더디게 느껴질 때도 있죠. 그래도 당신의 목소리는 분명히 들리고 있어요.",
+    "15": "당신이 놓치지 않은 그 작은 디테일 하나가, 누군가에게는 전부였을 거예요.",
+    "16": "느리더라도 괜찮아요. 우리는 분명 앞으로 나아가고 있어요, 당신과 함께.",
+    "17": "올해 당신이 만든 변화, 기록과 함께 사람들 마음속에 남을 거예요.",
+    "18": "한 대체텍스트, 한 포커스, 한 레이블까지. 당신이 챙긴 모든 순간이 정말 소중했어요.",
+    "19": "화면 너머 보이지 않는 사용자를 생각해준 당신의 마음, 그게 진짜 접근성이에요.",
+    "20": "변화는 천천히 와도 괜찮아요. 당신이 만든 작은 파장들은 계속 퍼져나갈 테니까요.",
+    "21": "올해의 마지막 메시지예요. 당신은 우리 팀의 자랑이에요. 새해에도 함께 해요!",
+    "22": "올해 했던 모든 노력은 차곡차곡 쌓여서, 더 나은 서비스의 든든한 기초가 됐어요.",
+    "23": "실제로 바뀌지 못한 부분이 있어도 괜찮아요. 당신이 세운 '기준'만큼은 남아 있으니까요.",
+    "24": "올해 당신이 남긴 모든 기록, 그게 바로 우리 팀의 미래 실력이에요.",
+    "25": "서비스가 아직 완벽하지 않아도 괜찮아요. 당신의 시도 하나하나가 이미 충분히 가치 있어요.",
+    "26": "올해 힘든 만큼, 내년에는 우리 더 단단한 팀이 되어 있을 거예요.",
+    "27": "완벽하지 않아도 괜찮아요. 중요한 건 계속 이해하려고 노력하는 그 마음이니까요.",
+    "28": "올해의 모든 고생, 우리 팀의 성장곡선 위에 고스란히 남아 있어요.",
+    "29": "누군가에게는 보이지 않는 일이었을 수도 있어요. 하지만 분명 큰 차이를 만들었어요.",
+    "30": "당신이 애쓴 모든 순간 하나하나가, 올해 우리가 이룬 가장 확실한 '개선'이에요."
+  };
 
-// 2. URL 파라미터에서 번호 읽기 (?01 → "01")
-const params = new URLSearchParams(window.location.search);
-const id = params.keys().next().value;  // 파라미터 이름 자체를 번호로 사용
+  // 2. URL 파라미터 (?01 → "01")
+  const params = new URLSearchParams(window.location.search);
+  const id = params.keys().next().value; // ?01 → "01"
 
-const output = document.getElementById("output");
+  const container = document.getElementById("fortune-content");
 
-// 3. 메시지 출력
-if (!id) {
-  output.innerHTML = `
-    <div class="error">메시지 번호가 전달되지 않았어요.</div>
-    <div class="hint">
-      포츈쿠키에서 뽑은 번호를 URL 끝에 붙여주세요.<br>
-      예시: <code>?01</code>, <code>?15</code>, <code>?30</code>
-    </div>
-  `;
-} else if (!messages[id]) {
-  output.innerHTML = `
-    <div class="error">메시지 <strong>${id}</strong> 를 찾을 수 없습니다.</div>
-    <div class="hint">01 ~ 30 사이의 번호를 사용해 주세요.</div>
-  `;
-} else {
-  output.innerHTML = `
-    <div class="msg-number">포츈 번호: ${id}</div>
-    <div class="message">${messages[id]}</div>
-  `;
-}
+  function renderEmpty() {
+    container.innerHTML = `
+      <div class="number-wrap">
+        <p class="number-pill" aria-hidden="true">
+          포츈 번호 <strong>--</strong>
+        </p>
+      </div>
+      <p class="fortune-text">
+        포츈쿠키에서 뽑은<br />
+        <strong>번호를 URL 끝에 붙여</strong> 접속해 주세요.
+      </p>
+      <p class="hint">
+        예시<br />
+        <code>?01</code>, <code>?15</code>, <code>?30</code><br /><br />
+        (번호 없이 접속하면 이 안내가 보입니다.)
+      </p>
+    `;
+  }
+
+  function renderNotFound(id) {
+    container.innerHTML = `
+      <div class="number-wrap">
+        <p class="number-pill">
+          포츈 번호 <strong>${id}</strong>
+        </p>
+      </div>
+      <p class="fortune-text">
+        아직 준비되지 않은 번호예요.<br />
+        <span style="font-size: 0.9em; color: var(--text-sub);">
+          01 ~ 30 사이의 번호를 사용해 주세요.
+        </span>
+      </p>
+    `;
+  }
+
+  function renderFortune(id, text) {
+    container.innerHTML = `
+      <h1 class="sr-only">포츈 번호 ${id} 메시지</h1>
+      <div class="number-wrap">
+        <p class="number-pill" aria-label="포츈 번호 ${id}">
+          포츈 번호 <strong>${id}</strong>
+        </p>
+      </div>
+      <p class="fortune-text">${text.replace(/\n/g, "<br />")}</p>
+      <p class="hint">
+        오늘 이 메시지는<br />
+        올 한 해 당신이 애쓴 시간들을 응원합니다.
+      </p>
+    `;
+  }
+
+  if (!id) {
+    renderEmpty();
+  } else if (!messages[id]) {
+    renderNotFound(id);
+  } else {
+    renderFortune(id, messages[id]);
+  }
 </script>
-
 </body>
 </html>
