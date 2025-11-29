@@ -21,9 +21,10 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Arial, sans-serif;
+      height: 100dvh;        /* 최신 모바일 브라우저 */
+      height: 100svh;        /* Safari 안정적 뷰포트 */
+      height: 100vh;         /* fallback */
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       background: radial-gradient(circle at top, #fbe8c8 0, var(--bg) 55%);
       color: var(--text-main);
       display: flex;
