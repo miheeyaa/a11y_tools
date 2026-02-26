@@ -118,7 +118,6 @@
                         <i data-lucide="database" class="text-indigo-500 w-7 h-7" aria-hidden="true"></i>
                         Severity 레퍼런스
                     </h3>
-                    <!-- 수정: n건 매칭됨 표시 삭제 및 전체 목록 보기 버튼 재배치 -->
                     <div>
                         <button onclick="showAllData()" class="px-6 py-2.5 bg-slate-800 text-white rounded-xl text-base font-black hover:bg-slate-900 transition-all shadow-md focus:outline-none">
                             전체 목록 보기
@@ -126,7 +125,6 @@
                     </div>
                 </div>
                 
-                <!-- 수정: 검사항목 선택 레이블과 셀렉트 박스 나란히 배치 -->
                 <div class="flex flex-col md:flex-row md:items-center gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
                     <label for="category-select" class="shrink-0 text-base font-black text-slate-700 uppercase tracking-widest">검사항목 선택</label>
                     <div class="relative flex-grow">
@@ -353,7 +351,7 @@
                 container.innerHTML = `
                     <div class="w-full max-w-6xl fade-in space-y-12 py-4 text-center text-slate-800">
                         <!-- Summary Cards 섹션 -->
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-stretch">
                             ${renderSummaryCard('CRITICAL', 'bg-red-600', '쓸 수 없음 + 인지 불가', '무엇인지조차 알 수 없어 아무것도 할 수 없는 서비스 Blocker 상황', 'bg-red-50/50', 'border-red-100')}
                             ${renderSummaryCard('MAJOR A', 'bg-orange-500', '인지는 되나 쓸 수 없음', '무엇인지는 알지만 실제 상호작용 요소가 작동하지 않는 상황', 'bg-orange-50/50', 'border-orange-100')}
                             ${renderSummaryCard('MAJOR B', 'bg-orange-600', '불완전 + 회복 어려움', '접근은 가능하나 이용이 불온전하며 상황 파악 및 회복이 어려운 경우', 'bg-orange-50/50', 'border-orange-200', 'border-dashed')}
@@ -365,6 +363,7 @@
                             <h3 class="text-2xl font-black text-slate-900">웹 접근성 오류 Severity 판단 플로우챠트</h3>
                         </div>
 
+                        <!-- Flowchart Vertical Container -->
                         <div class="flex flex-col items-center space-y-10 relative">
                             <!-- Step 0 -->
                             <div class="w-full max-w-xl bg-slate-800 text-white p-6 rounded-2xl shadow-xl z-10">
@@ -385,59 +384,68 @@
                             <div class="relative w-full">
                                 <div class="hidden md:block absolute top-0 left-[20%] right-[20%] h-0.5 bg-slate-300"></div>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6">
-                                    <!-- Path 1 -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6 items-start">
+                                    
+                                    <!-- Path 1: 쓸 수 없다 -->
                                     <div class="flex flex-col items-center space-y-6">
                                         <div class="h-6 w-0.5 bg-slate-300"></div>
                                         <p class="text-red-500 font-black text-sm uppercase">쓸 수 없다</p>
-                                        <div class="bg-white border-2 border-slate-200 p-6 rounded-2xl w-full shadow-md space-y-3 text-slate-800">
+                                        <!-- Row 1 alignment -->
+                                        <div class="bg-white border-2 border-slate-200 p-6 rounded-2xl w-full shadow-md text-slate-800 flex flex-col justify-center min-h-[150px]">
                                             <p class="font-black text-lg">무엇인지 알 수 있는가?</p>
                                             <p class="text-[12px] text-slate-500 font-bold leading-tight">(AT가 콘텐츠·기능의 목적을<br/>인식 가능한가?)</p>
                                         </div>
                                         
-                                        <div class="flex w-full gap-4">
+                                        <div class="flex w-full gap-4 items-stretch">
+                                            <!-- Row 2 alignment: min-h-[120px] -->
                                             <div class="flex-1 flex flex-col items-center space-y-4 text-white">
                                                 <div class="h-6 w-0.5 bg-red-300"></div>
                                                 <span class="text-[12px] text-red-600 font-black">알 수 없음</span>
-                                                <div class="w-full bg-red-600 p-4 rounded-xl shadow-lg">
+                                                <div class="w-full bg-red-600 p-4 rounded-xl shadow-lg flex-grow flex flex-col justify-center min-h-[120px]">
                                                     <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest mb-1 text-white">CRITICAL</p>
-                                                    <p class="font-black text-base">서비스 Blocker</p>
+                                                    <p class="font-black text-base leading-tight">서비스 Blocker</p>
                                                 </div>
                                             </div>
                                             <div class="flex-1 flex flex-col items-center space-y-4 text-white">
                                                 <div class="h-6 w-0.5 bg-orange-300"></div>
                                                 <span class="text-[12px] text-orange-600 font-black">알 수 있음</span>
-                                                <div class="w-full bg-orange-500 p-4 rounded-xl shadow-lg">
+                                                <div class="w-full bg-orange-500 p-4 rounded-xl shadow-lg flex-grow flex flex-col justify-center min-h-[120px]">
                                                     <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest mb-1 text-white">MAJOR A</p>
-                                                    <p class="font-black text-base">상호작용 이용 불가</p>
+                                                    <p class="font-black text-base leading-tight">상호작용 이용 불가</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <!-- Path 2: 접근 가능, 이용 불완전 -->
                                     <div class="flex flex-col items-center space-y-6">
                                         <div class="h-6 w-0.5 bg-slate-300"></div>
                                         <p class="text-indigo-500 font-black text-sm uppercase">접근 가능, 이용 불완전</p>
                                         
-                                        <div class="bg-white border-2 border-slate-200 p-6 rounded-2xl w-full shadow-md">
+                                        <!-- Row 1 alignment -->
+                                        <div class="bg-white border-2 border-slate-200 p-6 rounded-2xl w-full shadow-md flex flex-col justify-center min-h-[150px]">
                                             <p class="font-black text-slate-800 text-lg">신뢰 가능한 대안이 있는가?</p>
                                             <p class="text-[12px] text-slate-500 font-bold">(일관성 · 설계 의도 · AT 적용 가능성)</p>
                                         </div>
 
-                                        <div class="flex w-full gap-4 text-white">
-                                            <div class="flex-1 flex flex-col items-center space-y-4">
+                                        <!-- 수정: items-start를 사용하여 MINOR 박스가 하위 버튼 높이에 맞춰 늘어나는 것 방지 -->
+                                        <div class="flex w-full gap-4 items-start">
+                                            <!-- Row 2 alignment: min-h-[120px] -->
+                                            <div class="flex-1 flex flex-col items-center space-y-4 text-white">
                                                 <div class="h-6 w-0.5 bg-blue-300"></div>
                                                 <span class="text-[12px] text-blue-600 font-black">대안 있음</span>
-                                                <div class="w-full bg-blue-600 p-4 rounded-xl shadow-lg">
+                                                <!-- flex-grow 제거하여 높이 고정 -->
+                                                <div class="w-full bg-blue-600 p-4 rounded-xl shadow-lg flex flex-col justify-center min-h-[120px]">
                                                     <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest mb-1 text-white">MINOR</p>
-                                                    <p class="font-black text-base">대안 경로 존재</p>
+                                                    <p class="font-black text-base leading-tight">대안 경로 존재</p>
                                                 </div>
                                             </div>
                                             <div class="flex-1 flex flex-col items-center space-y-4">
                                                 <div class="h-6 w-0.5 bg-red-300"></div>
-                                                <span class="text-[12px] text-red-600 font-black">대안 없음</span>
+                                                <span class="text-[12px] text-red-400 font-black">대안 없음</span>
                                                 
-                                                <div class="bg-white border-2 border-slate-200 p-4 rounded-xl w-full text-sm font-black text-slate-700">
+                                                <!-- 수정: 높이 동일화 min-h-[120px] -->
+                                                <div class="bg-white border-2 border-slate-200 p-4 rounded-xl w-full text-sm font-black text-slate-700 flex flex-col justify-center min-h-[120px]">
                                                     회복 가능하고<br/>상황 파악이 가능한가?
                                                 </div>
                                                 
@@ -445,35 +453,40 @@
                                                     <div class="flex-1 flex flex-col items-center space-y-2">
                                                         <div class="h-4 w-0.5 bg-blue-300"></div>
                                                         <span class="text-[10px] text-blue-600 font-black">예</span>
-                                                        <div class="bg-blue-600 p-2 rounded-lg w-full text-[12px] font-black">MINOR</div>
+                                                        <div class="bg-blue-600 p-2 rounded-lg w-full text-[12px] font-black min-h-[48px] flex items-center justify-center">MINOR</div>
                                                     </div>
                                                     <div class="flex-1 flex flex-col items-center space-y-2">
                                                         <div class="h-4 w-0.5 bg-orange-300"></div>
-                                                        <span class="text-[10px] text-orange-400 font-black">아니오</span>
-                                                        <div class="bg-orange-400 p-2 rounded-lg w-full text-[12px] font-black py-2.5">MAJOR B</div>
+                                                        <span class="text-[10px] text-orange-600 font-black">아니오</span>
+                                                        <div class="bg-orange-400 p-2 rounded-lg w-full text-[12px] font-black min-h-[48px] flex items-center justify-center">MAJOR B</div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <!-- Path 3: 실질 영향 없음 -->
                                     <div class="flex flex-col items-center space-y-6">
                                         <div class="h-6 w-0.5 bg-slate-300"></div>
-                                        <p class="text-slate-500 font-black text-sm uppercase">실질 영향 없음</p>
-                                        <div class="w-full bg-slate-700 text-white p-6 rounded-2xl shadow-xl space-y-2">
+                                        <p class="text-slate-600 font-black text-sm uppercase">실질 영향 없음</p>
+                                        <!-- Row 1 alignment -->
+                                        <div class="w-full bg-slate-700 text-white p-6 rounded-2xl shadow-xl space-y-2 flex flex-col justify-center min-h-[150px]">
                                             <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest mb-1 text-white">TRIVIAL</p>
-                                            <p class="font-black text-lg">실질 영향 없음</p>
-                                            <p class="text-[12px] text-slate-300 font-bold leading-tight">AT 이용에<br/>미미한 영향</p>
+                                            <p class="font-black text-lg leading-tight">실질 영향 없음</p>
+                                            <p class="text-[12px] text-slate-300 font-bold leading-tight">AT 이용에 미미한 영향</p>
                                         </div>
 
-                                        <div class="w-full bg-indigo-50 border border-indigo-100 p-4 rounded-xl shadow-sm text-left mt-4 text-slate-800">
-                                            <p class="text-[11px] font-black text-indigo-600 mb-2 border-b border-indigo-100 pb-1 flex items-center gap-1.5">
-                                                <i data-lucide="help-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> 대안 인정 기준
-                                            </p>
-                                            <p class="text-[11px] text-indigo-800 leading-relaxed font-bold">
-                                                ① AT 자체 기능으로 달성 목표 완전 실현 가능<br/>
-                                                ② 설계된 다른 UI 경로로 동일 달성 목표 도달 가능
-                                            </p>
+                                        <!-- 대안 인정 기준 (독립됨) -->
+                                        <div class="w-full mt-4">
+                                            <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl shadow-sm text-left fade-in text-slate-800">
+                                                <p class="text-[11px] font-black text-indigo-600 mb-2 border-b border-indigo-100 pb-1 flex items-center gap-1.5">
+                                                    <i data-lucide="help-circle" class="w-3.5 h-3.5" aria-hidden="true"></i> 대안 인정 기준
+                                                </p>
+                                                <p class="text-[11px] text-indigo-800 leading-relaxed font-bold">
+                                                    ① AT 자체 기능으로 달성 목표 완전 실현 가능<br/>
+                                                    ② 설계된 다른 UI 경로로 동일 달성 목표 도달 가능
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -542,9 +555,9 @@
                             <button onclick="handleChoice('result-major-b', '아니오')" class="w-48 py-6 bg-orange-600 text-white rounded-2xl font-black shadow-2xl shadow-orange-200 active:scale-95 transition-all text-lg focus:outline-none">아니오</button>
                             <button onclick="handleChoice('result-minor', '예')" class="w-48 py-6 bg-slate-800 text-white rounded-2xl font-black active:scale-95 transition-all text-lg focus:outline-none">예</button>
                         </div>
-                        <div class="max-w-xl mx-auto mt-8 bg-indigo-50/50 border border-indigo-200 p-6 rounded-3xl text-left fade-in">
+                        <div class="max-w-xl mx-auto mt-8 bg-indigo-50/50 border border-indigo-100 p-6 rounded-3xl text-left fade-in">
                             <p class="text-indigo-700 font-black mb-3 flex items-center gap-2">
-                                <i data-lucide="info" class="w-5 h-3.5 text-indigo-600" aria-hidden="true"></i> 대안 인정 기준
+                                <i data-lucide="info" class="w-5 h-5 text-indigo-600" aria-hidden="true"></i> 대안 인정 기준
                             </p>
                             <ul class="space-y-2 text-slate-800 font-bold text-base">
                                 <li class="flex gap-2">
@@ -631,8 +644,6 @@
         function renderTable(data) {
             const body = document.getElementById('table-body');
             const empty = document.getElementById('empty-state');
-            const countBadge = document.getElementById('result-badge');
-            const countText = document.getElementById('result-count');
 
             if (data.length === 0) {
                 body.innerHTML = '';
